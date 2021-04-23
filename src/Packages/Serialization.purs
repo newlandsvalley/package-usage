@@ -24,5 +24,5 @@ writePackageUse packageUse =
     packageUseObject = fromFoldable tuples
   in
     -- Justin's writeJSON is not very pretty!  We'll just use the JavaScript prettifier.
-    -- JSON.writeJSON packageUseObject
+    -- SJSON.writeJSON packageUseObject
     prettyJSON packageUseObject

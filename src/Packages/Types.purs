@@ -22,6 +22,6 @@ type PackagesObject = Object Package
 
 type Packages = Array (Tuple PackageName Package)
 
-type PackageUse = Map PackageName (Array PackageName)
+type PackageUse = Map Dependency (Array PackageName)
 
 
