@@ -17,7 +17,7 @@ import Foreign (renderForeignError)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (writeTextFile)
 import Packages.Normal (simpleDependencies)
-import Packages.Pivoted (pivotedPackagesJsonString)
+import Packages.Pivoted (pivotedPackagesJsonString, simpleReversedDependencies)
 import Packages.Serialization (readPackages)
 import Options.Applicative (execParser)
 import Arguments.Types (Args(..))
@@ -56,19 +56,27 @@ processPackageSet (Args args) = launchAff $ do
         Right packages ->
           case args.reverse, args.transitive of 
            
-            true, false -> do              
+            true, false -> do   
               let 
-                json = pivotedPackagesJsonString packages
-              _ <- writeTextFile UTF8 outputFileName json
-              liftEffect $ log ("package usage written to : " <> outputFileName)
+                deps = simpleReversedDependencies packages args.packageName
+              liftEffect $ logShow deps
 
             false, false -> do
               let 
                 deps = simpleDependencies packages args.packageName
               liftEffect $ logShow deps
-              
+
             _, _ ->
               liftEffect $ log ("not implemented")
+
+            {- all pivoted packages  -- we don't have a command line arg for this yet   
+              let 
+                json = pivotedPackagesJsonString packages
+              _ <- writeTextFile UTF8 outputFileName json
+              liftEffect $ log ("package usage written to : " <> outputFileName)
+            
+            
+            -}
 
     Nothing -> 
       pure unit

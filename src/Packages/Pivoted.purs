@@ -1,6 +1,6 @@
 -- | Pivoted package sets where the relationship is reversed
 
-module Packages.Pivoted (pivot, pivotedPackagesJsonString)
+module Packages.Pivoted (pivot, pivotedPackagesJsonString, simpleReversedDependencies)
 
 where
 
@@ -8,18 +8,19 @@ import Packages.Types
 import Packages.Serialization (writePackageUse)
 import Data.Maybe (Maybe(..))
 import Data.Map (empty, insert, lookup)
+import Data.Set (Set, empty, insert, singleton) as S
 import Data.Tuple (Tuple(..))
-import Data.Array (cons, foldr, singleton)
+import Data.Array (foldr)
 
 -- We use foldr in preference to foldl so we get usage sorted alphabetically for free
 
-addUsage :: PackageName ->  Dependency -> PackageUse -> PackageUse
-addUsage packageName dependency packages = 
-  case lookup dependency packages of 
+addUsage :: PackageName ->  DependencyName -> PackageUse -> PackageUse
+addUsage packageName dependencyName packages = 
+  case lookup dependencyName packages of 
     Nothing -> 
-      insert dependency (singleton packageName) packages 
+      insert dependencyName (S.singleton packageName) packages 
     Just usages ->
-      insert dependency (cons packageName usages) packages
+      insert dependencyName (S.insert packageName usages) packages
 
 addDependenciesUsage :: Tuple PackageName Package -> PackageUse -> PackageUse
 addDependenciesUsage (Tuple packageName package) packages = 
@@ -33,4 +34,12 @@ pivot packages =
 pivotedPackagesJsonString :: Packages -> String
 pivotedPackagesJsonString packages = 
   writePackageUse (pivot packages)
+
+simpleReversedDependencies :: Packages -> PackageName -> S.Set DependencyName
+simpleReversedDependencies packages target =
+  case lookup target (pivot packages) of 
+    Nothing -> 
+      S.empty
+    Just deps -> 
+      deps  
 

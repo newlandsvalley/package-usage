@@ -12,7 +12,6 @@ import Data.Set (Set, empty, fromFoldable) as S
 import Data.Tuple (Tuple)
 import Prelude ((>>>), map)
 
-
 buildPackageMap :: Packages -> PackageMap 
 buildPackageMap packages = 
   let
@@ -21,7 +20,8 @@ buildPackageMap packages =
   in
     fromFoldable directDeps  
 
-simpleDependencies :: Packages -> PackageName -> S.Set Dependency
+-- | Trivial one-level deep dependencies for the given target package name
+simpleDependencies :: Packages -> PackageName -> S.Set DependencyName
 simpleDependencies packages target =
   case lookup target (buildPackageMap packages) of 
     Nothing -> 

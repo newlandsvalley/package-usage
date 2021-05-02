@@ -8,10 +8,10 @@ import Data.Map
 import Data.Set as S
   
 
-type Dependency = String
+type DependencyName = String
 type PackageName = String
 
-type Dependencies = Array Dependency
+type Dependencies = Array DependencyName
 
 type Package = 
   { dependencies :: Dependencies
@@ -23,8 +23,8 @@ type PackagesObject = Object Package
 
 type Packages = Array (Tuple PackageName Package)
 
-type PackageUse = Map Dependency (Array PackageName)
+type PackageUse = Map DependencyName (S.Set PackageName)
 
-type PackageMap = Map PackageName (S.Set Dependency)
+type PackageMap = Map PackageName (S.Set DependencyName)
 
 

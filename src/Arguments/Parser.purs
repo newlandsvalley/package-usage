@@ -14,7 +14,7 @@ args =
       <$> strOption
           ( long "package"
          <> short 'p'
-         <> metavar "PACKAGE NAME"
+         <> metavar "PACKAGE-NAME"
          <> help "Target package name" )
       <*> switch
           ( long "reverse"
