@@ -16,8 +16,11 @@ import Effect.Console (log)
 import Foreign (renderForeignError)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (writeTextFile)
-import Packages.Pivot (pivot)
-import Packages.Serialization (readPackages, writePackageUse)
+import Packages.Pivot (pivotedPackagesJsonString)
+import Packages.Serialization (readPackages)
+import Options.Applicative (execParser)
+import Arguments.Types (Args(..))
+import Arguments.Parser (opts)
 
 outputFileName :: String 
 outputFileName = "package-use.json" 
@@ -26,11 +29,19 @@ packageSetsURI :: String
 packageSetsURI =
   "https://raw.githubusercontent.com/purescript/package-sets/master/packages.json"
 
--- fetch pakages.json and pivot it in the output file (package-use.json)
+
+main :: Effect Unit
+main = do    
+  args <- execParser opts
+  _ <- processPackageSet args
+  pure unit
+
+-- fetch packages.json and process it according to tje reuest args:
+-- pivot it in the output file (package-use.json)
 -- so that we see a list of packages that use each package insofar 
--- as the authors have bothered to add their librray to package sets.
-main :: Effect (Fiber Unit)
-main = launchAff $ do
+-- as the authors have bothered to add their library to package sets.
+processPackageSet :: Args -> Effect (Fiber Unit)
+processPackageSet (Args args) = launchAff $ do
   mBuffer <- simpleRequest packageSetsURI
   case mBuffer of
     Just buffer -> 
@@ -41,14 +52,17 @@ main = launchAff $ do
             errText = intercalate "," $ map renderForeignError errs
           in 
             liftEffect $ log $ errText
-        Right packages -> 
-          let 
-            packageUse = pivot packages 
-            json = writePackageUse packageUse
-          in
-            do     
+        Right packages ->
+          case args.reverse, args.transitive of 
+           
+            true, false -> do              
+              let 
+                json = pivotedPackagesJsonString packages
               _ <- writeTextFile UTF8 outputFileName json
               liftEffect $ log ("package usage written to : " <> outputFileName)
+            _, _ ->
+              liftEffect $ log ("not implemented")
+
     Nothing -> 
       pure unit
 

@@ -17,6 +17,7 @@ You can edit this file as you like.
                  , "maybe"
                  , "node-buffer"
                  , "node-fs-aff"
+                 , "optparse"
                  , "ordered-collections"
                  , "prelude"
                  , "psci-support"

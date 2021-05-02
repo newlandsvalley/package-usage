@@ -1,8 +1,9 @@
-module Packages.Pivot (pivot)
+module Packages.Pivot (pivot, pivotedPackagesJsonString)
 
 where
 
 import Packages.Types
+import Packages.Serialization (writePackageUse)
 import Data.Maybe (Maybe(..))
 import Data.Map (empty, insert, lookup)
 import Data.Tuple (Tuple(..))
@@ -26,4 +27,8 @@ addDependenciesUsage (Tuple packageName package) packages =
 pivot :: Packages -> PackageUse
 pivot packages =
   foldr addDependenciesUsage empty packages
+
+pivotedPackagesJsonString :: Packages -> String
+pivotedPackagesJsonString packages = 
+  writePackageUse (pivot packages)
 

@@ -108,3 +108,62 @@ let upstream =
       https://github.com/purescript/package-sets/releases/download/psc-0.14.1-20210419/packages.dhall sha256:d9a082ffb5c0fabf689574f0680e901ca6f924e01acdbece5eeedd951731375a
 
 in  upstream
+  with optparse =
+    { dependencies =
+      [ "prelude"
+      , "effect"
+      , "exitcodes"
+      , "strings"
+      , "arrays"
+      , "console"
+      , "open-memoize"
+      , "transformers"
+      , "exists"
+      , "node-process"
+      , "free"
+      , "spec"
+      , "aff"
+      , "bifunctors"
+      , "control"
+      , "either"
+      , "enums"
+      , "foldable-traversable"
+      , "gen"
+      , "integers"
+      , "lazy"
+      , "lists"
+      , "maybe"
+      , "newtype"
+      , "node-buffer"
+      , "node-streams"
+      , "nonempty"
+      , "numbers"
+      , "partial"
+      , "tailrec"
+      , "tuples"
+      ]  
+    , repo =
+       "https://github.com/f-o-a-m/purescript-optparse.git"
+    , version =
+        "v4.1.0"
+    }
+  with open-memoize =
+    { dependencies =
+        [ "console"
+        , "effect"
+        , "psci-support"
+        , "strings"
+        , "lists"
+        , "either"
+        , "integers"
+        , "lazy"
+        , "maybe"
+        , "partial"
+        , "prelude"
+        , "tuples"
+        ]
+    , repo =
+        "https://github.com/purescript-open-community/purescript-open-memoize.git"
+    , version =
+        "v6.1.0"
+    }
