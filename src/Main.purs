@@ -14,10 +14,8 @@ import Effect.Aff (Aff, Fiber, launchAff)
 import Effect.Class (liftEffect)
 import Effect.Console (log, logShow)
 import Foreign (renderForeignError)
-import Node.Encoding (Encoding(..))
-import Node.FS.Aff (writeTextFile)
 import Packages.Normal (simpleDependencies)
-import Packages.Pivoted (pivotedPackagesJsonString, simpleReversedDependencies)
+import Packages.Pivoted (simpleReversedDependencies)
 import Packages.Transitivity (transitiveDependencies)
 import Packages.Serialization (readPackages)
 import Options.Applicative (execParser)
@@ -60,8 +58,10 @@ processPackageSet (Args args) = launchAff $ do
         Right packages ->
           case args.reverse, args.transitive of 
 
-            true, true -> 
-              liftEffect $ log ("not implemented")
+            true, true -> do
+              let 
+                deps = transitiveDependencies packages args.packageName true
+              liftEffect $ logShow deps
            
             true, false -> do   
               let 
@@ -75,7 +75,7 @@ processPackageSet (Args args) = launchAff $ do
 
             false, true  -> do
               let 
-                deps = transitiveDependencies packages args.packageName
+                deps = transitiveDependencies packages args.packageName false
               liftEffect $ logShow deps
 
             {- all pivoted packages  -- we don't have a command line arg for this yet   

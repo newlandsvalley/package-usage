@@ -17,8 +17,10 @@ You can edit this file as you like.
                  , "http-methods"
                  , "lists"
                  , "maybe"
+                 {-}
                  , "node-buffer"
                  , "node-fs-aff"
+                 -}
                  , "optparse"
                  , "ordered-collections"
                  , "prelude"

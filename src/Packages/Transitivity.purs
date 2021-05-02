@@ -13,6 +13,7 @@ import Data.Maybe (Maybe(..))
 import Data.Set as S
 import Packages.Types (Packages, PackageMap)
 import Packages.Normal (buildPackageMap)
+import Packages.Pivoted (pivot)
 
 immediateConstituentsOf :: PackageMap -> String -> S.Set String 
 immediateConstituentsOf packageMap target  = 
@@ -32,10 +33,14 @@ allPackageDeps packageMap seed
       go deps _ | S.isEmpty deps = mempty
       go deps rec = deps <> peek deps rec
 
-transitiveDependencies :: Packages -> String -> S.Set String
-transitiveDependencies packages seed =
+transitiveDependencies :: Packages -> String -> Boolean -> S.Set String
+transitiveDependencies packages seed isReversed =
   let 
-    packageMap = buildPackageMap packages
+    packageMap = 
+      if (isReversed) then 
+        pivot packages
+      else 
+        buildPackageMap packages
   in
     extract (allPackageDeps packageMap seed)
 
