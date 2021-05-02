@@ -12,11 +12,12 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Aff, Fiber, launchAff)
 import Effect.Class (liftEffect)
-import Effect.Console (log)
+import Effect.Console (log, logShow)
 import Foreign (renderForeignError)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (writeTextFile)
-import Packages.Pivot (pivotedPackagesJsonString)
+import Packages.Normal (simpleDependencies)
+import Packages.Pivoted (pivotedPackagesJsonString)
 import Packages.Serialization (readPackages)
 import Options.Applicative (execParser)
 import Arguments.Types (Args(..))
@@ -60,6 +61,12 @@ processPackageSet (Args args) = launchAff $ do
                 json = pivotedPackagesJsonString packages
               _ <- writeTextFile UTF8 outputFileName json
               liftEffect $ log ("package usage written to : " <> outputFileName)
+
+            false, false -> do
+              let 
+                deps = simpleDependencies packages args.packageName
+              liftEffect $ logShow deps
+              
             _, _ ->
               liftEffect $ log ("not implemented")
 

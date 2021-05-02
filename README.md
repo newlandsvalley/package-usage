@@ -1,7 +1,7 @@
 package-deps
 ============
 
-A command-line utility to investigate the current purescript package-sets and to let you query both the immediate and transitive dependencies of a package.  It also lets you pivot the package sets so as the reverse the dependencies and query the pivoted data in the same manner.
+A command-line utility to investigate the current purescript package-sets and to let you query both the immediate and transitive dependencies of a package.  It also lets you pivot the package sets so as to reverse the dependencies and query the pivoted data in the same manner.
 
 command line options
 --------------------

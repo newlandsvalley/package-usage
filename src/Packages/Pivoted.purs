@@ -1,4 +1,6 @@
-module Packages.Pivot (pivot, pivotedPackagesJsonString)
+-- | Pivoted package sets where the relationship is reversed
+
+module Packages.Pivoted (pivot, pivotedPackagesJsonString)
 
 where
 

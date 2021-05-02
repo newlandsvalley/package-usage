@@ -5,6 +5,7 @@ where
 import Foreign.Object (Object)
 import Data.Tuple (Tuple)
 import Data.Map
+import Data.Set as S
   
 
 type Dependency = String
@@ -23,5 +24,7 @@ type PackagesObject = Object Package
 type Packages = Array (Tuple PackageName Package)
 
 type PackageUse = Map Dependency (Array PackageName)
+
+type PackageMap = Map PackageName (S.Set Dependency)
 
 
