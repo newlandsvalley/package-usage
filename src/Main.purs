@@ -18,6 +18,7 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Aff (writeTextFile)
 import Packages.Normal (simpleDependencies)
 import Packages.Pivoted (pivotedPackagesJsonString, simpleReversedDependencies)
+import Packages.Transitivity (transitiveDependencies)
 import Packages.Serialization (readPackages)
 import Options.Applicative (execParser)
 import Arguments.Types (Args(..))
@@ -37,10 +38,13 @@ main = do
   _ <- processPackageSet args
   pure unit
 
--- fetch packages.json and process it according to tje reuest args:
--- pivot it in the output file (package-use.json)
--- so that we see a list of packages that use each package insofar 
--- as the authors have bothered to add their library to package sets.
+-- | Fetch packages.json and process it according to the request args:
+-- |
+-- |   simple forward dependencies
+-- |   transitive forward dependencies 
+-- |   simple reversed dependencies
+-- |   transitive reversed dependencies 
+-- |
 processPackageSet :: Args -> Effect (Fiber Unit)
 processPackageSet (Args args) = launchAff $ do
   mBuffer <- simpleRequest packageSetsURI
@@ -55,6 +59,9 @@ processPackageSet (Args args) = launchAff $ do
             liftEffect $ log $ errText
         Right packages ->
           case args.reverse, args.transitive of 
+
+            true, true -> 
+              liftEffect $ log ("not implemented")
            
             true, false -> do   
               let 
@@ -66,15 +73,16 @@ processPackageSet (Args args) = launchAff $ do
                 deps = simpleDependencies packages args.packageName
               liftEffect $ logShow deps
 
-            _, _ ->
-              liftEffect $ log ("not implemented")
+            false, true  -> do
+              let 
+                deps = transitiveDependencies packages args.packageName
+              liftEffect $ logShow deps
 
             {- all pivoted packages  -- we don't have a command line arg for this yet   
               let 
                 json = pivotedPackagesJsonString packages
               _ <- writeTextFile UTF8 outputFileName json
-              liftEffect $ log ("package usage written to : " <> outputFileName)
-            
+              liftEffect $ log ("package usage written to : " <> outputFileName)           
             
             -}
 

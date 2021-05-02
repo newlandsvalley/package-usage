@@ -1,6 +1,6 @@
 -- | Normal, unpivoted packages
 
-module Packages.Normal (simpleDependencies)
+module Packages.Normal (buildPackageMap, simpleDependencies)
 
 where
 

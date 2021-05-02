@@ -8,12 +8,14 @@ You can edit this file as you like.
                  , "arrays"
                  , "bifunctors"
                  , "console"
+                 , "control"
                  , "effect"
                  , "either"
                  , "foldable-traversable"
                  , "foreign"
                  , "foreign-object"
                  , "http-methods"
+                 , "lists"
                  , "maybe"
                  , "node-buffer"
                  , "node-fs-aff"
@@ -23,6 +25,7 @@ You can edit this file as you like.
                  , "psci-support"
                  , "simple-json"
                  , "tuples" 
+                 , "transformers"
                  ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
