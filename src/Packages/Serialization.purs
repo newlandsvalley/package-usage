@@ -1,13 +1,16 @@
 module Packages.Serialization 
   ( readPackages
   , writeDependenciesJSON
-  , writePackageUseJSON)
+  , writePackageUseJSON
+  , writePathsJSON)
 
 where
 
 import Prelude (map)
+import Data.Array (fromFoldable) as A
 import Data.Bifunctor (rmap)
 import Data.Either (Either)
+import Data.List (intercalate)
 import Data.Map (toUnfoldable) as Map
 import Data.Set as S
 import Data.Tuple (Tuple)
@@ -42,4 +45,13 @@ writeDependenciesJSON deps =
   where 
     depsArray :: Array String
     depsArray = S.toUnfoldable deps
+
+writePathsJSON :: Paths -> String
+writePathsJSON paths =
+  prettyJSON (map pathString (A.fromFoldable paths))
+
+  where
+    pathString :: Path -> String 
+    pathString path = 
+      intercalate "->" path  
 

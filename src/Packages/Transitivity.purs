@@ -26,8 +26,8 @@ storedDependencies packageMap seed =
   store (foldMap (immediateConstituentsOf packageMap)) (S.singleton seed)
 
 allPackageDeps :: PackageMap -> String -> Store (S.Set String) (S.Set String)
-allPackageDeps packageMap seed
-  = extend wfix (go <$> (storedDependencies packageMap seed))
+allPackageDeps packageMap seed = 
+  extend wfix (go <$> (storedDependencies packageMap seed))
     where
       go :: S.Set String -> Store (S.Set String) (S.Set String) -> (S.Set String)
       go deps _ | S.isEmpty deps = mempty
@@ -35,15 +35,14 @@ allPackageDeps packageMap seed
 
 transitiveDependencies :: Packages -> String -> Boolean -> S.Set String
 transitiveDependencies packages seed isReversed =
-  let 
+  extract (allPackageDeps packageMap seed)
+  where
     packageMap = 
       if (isReversed) then 
         pivot packages
       else 
         buildPackageMap packages
-  in
-    extract (allPackageDeps packageMap seed)
-
+  
 -- | Comonadic fixed point à la Menendez
 wfix :: forall w a. Comonad w => w (w a -> a) -> a
 wfix w = extract w (extend wfix w)

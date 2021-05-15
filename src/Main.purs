@@ -18,8 +18,9 @@ import Effect.Console (log)
 import Foreign (renderForeignError)
 import Options.Applicative (customExecParser, prefs, showHelpOnEmpty)
 import Packages.Normal (simpleDependencies)
+import Packages.Paths (allPaths)
 import Packages.Pivoted (simpleReversedDependencies)
-import Packages.Serialization (readPackages, writeDependenciesJSON)
+import Packages.Serialization (readPackages, writeDependenciesJSON, writePathsJSON)
 import Packages.Transitivity (transitiveDependencies)
 
 outputFileName :: String 
@@ -60,7 +61,7 @@ processPackageSet commandArgs = launchAff $ do
             errText = intercalate "," $ map renderForeignError errs
           in 
             liftEffect $ log $ errText
-            
+
         Right packages ->
           case commandArgs of 
             
@@ -88,8 +89,10 @@ processPackageSet commandArgs = launchAff $ do
                     deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName false
                   liftEffect $ log deps
 
-            Paths _ -> 
-              liftEffect $ log "not yet implemented"
+            Paths {sourceName, targetName} -> do
+              let 
+                paths = writePathsJSON $ allPaths sourceName targetName packages
+              liftEffect $ log paths
 
             {- all pivoted packages  -- we don't have a command line arg for this yet   
               let 

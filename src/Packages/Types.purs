@@ -4,6 +4,7 @@ where
 
 import Foreign.Object (Object)
 import Data.Tuple (Tuple)
+import Data.List (List)
 import Data.Map
 import Data.Set as S
   
@@ -26,5 +27,10 @@ type Packages = Array (Tuple PackageName Package)
 type PackageUse = Map DependencyName (S.Set PackageName)
 
 type PackageMap = Map PackageName (S.Set DependencyName)
+
+type Path = List PackageName
+
+type Paths = List Path
+
 
 
