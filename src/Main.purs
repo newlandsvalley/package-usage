@@ -5,6 +5,8 @@ import Prelude
 import Affjax (defaultRequest, printError, request)
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.StatusCode (StatusCode(..))
+import Arguments.Parser (opts)
+import Arguments.Types (Args(..))
 import Data.Either (Either(..))
 import Data.Foldable (intercalate)
 import Data.HTTP.Method (Method(..))
@@ -14,13 +16,11 @@ import Effect.Aff (Aff, Fiber, launchAff)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Foreign (renderForeignError)
+import Options.Applicative (customExecParser, prefs, showHelpOnEmpty)
 import Packages.Normal (simpleDependencies)
 import Packages.Pivoted (simpleReversedDependencies)
-import Packages.Transitivity (transitiveDependencies)
 import Packages.Serialization (readPackages, writeDependenciesJSON)
-import Options.Applicative (execParser)
-import Arguments.Types (Args(..))
-import Arguments.Parser (opts)
+import Packages.Transitivity (transitiveDependencies)
 
 outputFileName :: String 
 outputFileName = "package-use.json" 
@@ -32,7 +32,9 @@ packageSetsURI =
 
 main :: Effect Unit
 main = do    
-  args <- execParser opts
+  let 
+    preferences = prefs showHelpOnEmpty
+  args <- customExecParser preferences opts
   _ <- processPackageSet args
   pure unit
 
@@ -43,8 +45,11 @@ main = do
 -- |   simple reversed dependencies
 -- |   transitive reversed dependencies 
 -- |
+-- | or 
+-- |
+-- |   all paths between two packages
 processPackageSet :: Args -> Effect (Fiber Unit)
-processPackageSet (Args args) = launchAff $ do
+processPackageSet commandArgs = launchAff $ do
   mBuffer <- simpleRequest packageSetsURI
   case mBuffer of
     Just buffer -> 
@@ -55,28 +60,36 @@ processPackageSet (Args args) = launchAff $ do
             errText = intercalate "," $ map renderForeignError errs
           in 
             liftEffect $ log $ errText
+            
         Right packages ->
-          case args.reverse, args.transitive of 
+          case commandArgs of 
+            
+            Dependencies args -> 
 
-            true, true -> do
-              let 
-                deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName true
-              liftEffect $ log deps
+              case args.reverse, args.transitive of 
+
+                true, true -> do
+                  let 
+                    deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName true
+                  liftEffect $ log deps
            
-            true, false -> do   
-              let 
-                deps = writeDependenciesJSON $ simpleReversedDependencies packages args.packageName
-              liftEffect $ log deps
+                true, false -> do   
+                  let 
+                    deps = writeDependenciesJSON $ simpleReversedDependencies packages args.packageName
+                  liftEffect $ log deps
 
-            false, false -> do
-              let 
-                deps = writeDependenciesJSON $ simpleDependencies packages args.packageName
-              liftEffect $ log deps
+                false, false -> do
+                  let 
+                    deps = writeDependenciesJSON $ simpleDependencies packages args.packageName
+                  liftEffect $ log deps
 
-            false, true  -> do
-              let 
-                deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName false
-              liftEffect $ log deps
+                false, true  -> do
+                  let 
+                    deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName false
+                  liftEffect $ log deps
+
+            Paths _ -> 
+              liftEffect $ log "not yet implemented"
 
             {- all pivoted packages  -- we don't have a command line arg for this yet   
               let 
