@@ -6,21 +6,21 @@ A command-line utility to investigate the current purescript package-sets and to
 command line options
 --------------------
 
-Show the direct dependencies of the supplied package
+direct dependencies of a package
 
 ```
     ./package-deps deps --package NAME
     ./package-deps deps -p NAME
 ```
 
-Show the transitive dependencies of the supplied package
+transitive dependencies of a package
 
 ```
     ./package-deps deps --transitive --package NAME
     ./package-deps deps -t -p NAME
 ```
 
-Show the packages that themselves immediately depend on the package with the supplied name by reversing the dependencies
+all packages that themselves immediately depend on another package (by reversing the dependencies direction)
 
 ```
     ./package-deps deps --reverse --package NAME
@@ -28,14 +28,14 @@ Show the packages that themselves immediately depend on the package with the sup
 ```
 
 
-Show the packages that themselves transitively depend on the package with the supplied name
+all packages that themselves transitively depend on another package 
 
 ```
     ./package-deps deps --reverse --transitive --package NAME
     ./package-deps deps -r -t -p NAME
 ```
 
-Show all the paths that exist between two different packages
+all the paths that exist between two packages (forward direction)
 
 ```
     ./package-deps paths --from NAME --to NAME
