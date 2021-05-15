@@ -1,4 +1,7 @@
-module Packages.Serialization (readPackages, writePackageUse)
+module Packages.Serialization 
+  ( readPackages
+  , writeDependenciesJSON
+  , writePackageUseJSON)
 
 where
 
@@ -18,13 +21,25 @@ readPackages :: String -> Either MultipleErrors Packages
 readPackages s = 
   rmap toUnfoldable (SJSON.readJSON s )
 
-writePackageUse :: PackageUse -> String
-writePackageUse packageUse =
-  let
+
+-- Justin's writeJSON is not very pretty!  We'll just use the JavaScript prettifier.
+-- SJSON.writeJSON packageUseObject  
+
+writePackageUseJSON :: PackageUse -> String
+writePackageUseJSON packageUse =
+  prettyJSON packageUseObject
+
+  where
     tuples :: Array (Tuple PackageName (Array PackageName))
     tuples = Map.toUnfoldable (map (S.toUnfoldable) packageUse)
     packageUseObject = fromFoldable tuples
-  in
-    -- Justin's writeJSON is not very pretty!  We'll just use the JavaScript prettifier.
-    -- SJSON.writeJSON packageUseObject
-    prettyJSON packageUseObject
+  
+
+writeDependenciesJSON :: S.Set String -> String 
+writeDependenciesJSON deps = 
+  prettyJSON depsArray
+
+  where 
+    depsArray :: Array String
+    depsArray = S.toUnfoldable deps
+

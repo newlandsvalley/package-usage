@@ -5,7 +5,7 @@ module Packages.Pivoted (pivot, pivotedPackagesJsonString, simpleReversedDepende
 where
 
 import Packages.Types
-import Packages.Serialization (writePackageUse)
+import Packages.Serialization (writePackageUseJSON)
 import Data.Maybe (Maybe(..))
 import Data.Map (empty, insert, lookup)
 import Data.Set (Set, empty, insert, singleton) as S
@@ -33,7 +33,7 @@ pivot packages =
 
 pivotedPackagesJsonString :: Packages -> String
 pivotedPackagesJsonString packages = 
-  writePackageUse (pivot packages)
+  writePackageUseJSON (pivot packages)
 
 simpleReversedDependencies :: Packages -> PackageName -> S.Set DependencyName
 simpleReversedDependencies packages target =

@@ -12,12 +12,12 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Aff, Fiber, launchAff)
 import Effect.Class (liftEffect)
-import Effect.Console (log, logShow)
+import Effect.Console (log)
 import Foreign (renderForeignError)
 import Packages.Normal (simpleDependencies)
 import Packages.Pivoted (simpleReversedDependencies)
 import Packages.Transitivity (transitiveDependencies)
-import Packages.Serialization (readPackages)
+import Packages.Serialization (readPackages, writeDependenciesJSON)
 import Options.Applicative (execParser)
 import Arguments.Types (Args(..))
 import Arguments.Parser (opts)
@@ -60,23 +60,23 @@ processPackageSet (Args args) = launchAff $ do
 
             true, true -> do
               let 
-                deps = transitiveDependencies packages args.packageName true
-              liftEffect $ logShow deps
+                deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName true
+              liftEffect $ log deps
            
             true, false -> do   
               let 
-                deps = simpleReversedDependencies packages args.packageName
-              liftEffect $ logShow deps
+                deps = writeDependenciesJSON $ simpleReversedDependencies packages args.packageName
+              liftEffect $ log deps
 
             false, false -> do
               let 
-                deps = simpleDependencies packages args.packageName
-              liftEffect $ logShow deps
+                deps = writeDependenciesJSON $ simpleDependencies packages args.packageName
+              liftEffect $ log deps
 
             false, true  -> do
               let 
-                deps = transitiveDependencies packages args.packageName false
-              liftEffect $ logShow deps
+                deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName false
+              liftEffect $ log deps
 
             {- all pivoted packages  -- we don't have a command line arg for this yet   
               let 
