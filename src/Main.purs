@@ -6,7 +6,7 @@ import Affjax (defaultRequest, printError, request)
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.StatusCode (StatusCode(..))
 import Arguments.Parser (opts)
-import Arguments.Types (Args(..))
+import Arguments.Types (Args, Command(..))
 import Data.Either (Either(..))
 import Data.Foldable (intercalate)
 import Data.HTTP.Method (Method(..))
@@ -22,14 +22,6 @@ import Packages.Paths (allPaths)
 import Packages.Pivoted (simpleReversedDependencies)
 import Packages.Serialization (readPackages, writeDependenciesJSON, writePathsJSON)
 import Packages.Transitivity (transitiveDependencies)
-
-outputFileName :: String 
-outputFileName = "package-use.json" 
-
-packageSetsURI :: String
-packageSetsURI =
-  "https://raw.githubusercontent.com/purescript/package-sets/master/packages.json"
-
 
 main :: Effect Unit
 main = do    
@@ -49,9 +41,11 @@ main = do
 -- | or 
 -- |
 -- |   all paths between two packages
+-- |
+-- | the packages.json uri which we query is also extracted from the args 
 processPackageSet :: Args -> Effect (Fiber Unit)
-processPackageSet commandArgs = launchAff $ do
-  mBuffer <- simpleRequest packageSetsURI
+processPackageSet allArgs = launchAff $ do
+  mBuffer <- simpleRequest allArgs.uri
   case mBuffer of
     Just buffer -> 
       case readPackages buffer of
@@ -63,7 +57,7 @@ processPackageSet commandArgs = launchAff $ do
             liftEffect $ log $ errText
 
         Right packages ->
-          case commandArgs of 
+          case allArgs.command of 
             
             Dependencies args -> 
 
@@ -125,5 +119,11 @@ simpleRequest url = do
         _ -> do
           _ <- liftEffect $ log (response.statusText <> " " <> url)
           pure Nothing
+
+
+{-}
+outputFileName :: String 
+outputFileName = "package-use.json" 
+-}
 
 

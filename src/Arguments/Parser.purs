@@ -2,15 +2,22 @@ module Arguments.Parser
 
 where
 
+import Options.Applicative
+
+import Arguments.Types (Args, Command(..))
 import Effect (Effect)
 import Effect.Console (log, logShow)
-import Prelude (($), (<$>), (<*>), (<>), Unit, bind, map)
-import Options.Applicative
-import Arguments.Types (Args(..))
+import Prelude ((<$>), (<*>), (<>), Unit, bind)
+
+-- | the default URI for package sets packages.json
+defaultURI :: String
+defaultURI =
+  "https://raw.githubusercontent.com/purescript/package-sets/master/packages.json"
+
 
 dependencyArgs :: Parser Args
 dependencyArgs = 
-  map Dependencies $ ({ packageName:_, reverse:_, transitive:_})
+  buildDependencyArgs
       <$> strOption
           ( long "package"
          <> short 'p'
@@ -23,12 +30,25 @@ dependencyArgs =
       <*> switch
           ( long "transitive"
          <> short 't'
-         <> help "Whether to include transitive dependencies")
+         <> help "Whether to include transitive dependencies")   
+      <*> strOption 
+          ( long "uri"
+         <> short 'u'
+         <> metavar "URI"
+         <> value defaultURI 
+         <> showDefault 
+         <> help "packages.json URI" )
 
+buildDependencyArgs :: String -> Boolean -> Boolean -> String -> Args 
+buildDependencyArgs packageName reverse transitive uri = 
+  { uri, command }
+
+  where 
+    command = Dependencies { packageName, reverse, transitive }
 
 pathArgs :: Parser Args
 pathArgs = 
-  map Paths $ ({ sourceName:_, targetName:_})
+  buildPathArgs
       <$> strOption
           ( long "from"
          <> short 'f'
@@ -39,6 +59,20 @@ pathArgs =
          <> short 't'         
          <> metavar "PACKAGE-NAME"
          <> help "To package name" )     
+      <*> strOption 
+          ( long "uri"
+         <> short 'u'
+         <> metavar "URI"
+         <> value defaultURI 
+         <> showDefault 
+         <> help "packages.json URI" )
+
+buildPathArgs :: String -> String -> String -> Args 
+buildPathArgs sourceName targetName uri = 
+  { uri, command }
+
+  where 
+    command = Paths { sourceName, targetName }
 
 commandLine :: Parser Args
 commandLine = 

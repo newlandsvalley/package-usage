@@ -2,11 +2,11 @@ module Arguments.Types
 
 where
 
-import Prelude (class Show)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
+import Prelude (class Show)
   
-data Args = 
+data Command = 
     Dependencies
       { packageName  :: String
       , reverse  :: Boolean
@@ -17,5 +17,10 @@ data Args =
       , targetName   :: String
       }
 
-derive instance genericArgs :: Generic Args _
-instance showArgs :: Show Args where show = genericShow
+derive instance genericCommand:: Generic Command _
+instance showCommand :: Show Command where show = genericShow      
+
+type Args = 
+  { uri :: String 
+  , command :: Command
+  }
