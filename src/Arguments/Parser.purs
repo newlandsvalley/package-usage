@@ -31,20 +31,7 @@ dependencyArgs =
           ( long "transitive"
          <> short 't'
          <> help "Whether to include transitive dependencies")   
-      <*> strOption 
-          ( long "uri"
-         <> short 'u'
-         <> metavar "URI"
-         <> value defaultURI 
-         <> showDefault 
-         <> help "packages.json URI" )
-
-buildDependencyArgs :: String -> Boolean -> Boolean -> String -> Args 
-buildDependencyArgs packageName reverse transitive uri = 
-  { uri, command }
-
-  where 
-    command = Dependencies { packageName, reverse, transitive }
+      <*> uriArg
 
 pathArgs :: Parser Args
 pathArgs = 
@@ -59,13 +46,25 @@ pathArgs =
          <> short 't'         
          <> metavar "PACKAGE-NAME"
          <> help "To package name" )     
-      <*> strOption 
-          ( long "uri"
-         <> short 'u'
-         <> metavar "URI"
-         <> value defaultURI 
-         <> showDefault 
-         <> help "packages.json URI" )
+      <*> uriArg
+
+-- just parse the URI (shared between dependencies and paths)
+uriArg :: Parser String 
+uriArg = 
+  strOption 
+    ( long "uri"
+   <> short 'u'
+   <> metavar "URI"
+   <> value defaultURI 
+   <> showDefault 
+   <> help "packages.json URI" )
+
+buildDependencyArgs :: String -> Boolean -> Boolean -> String -> Args 
+buildDependencyArgs packageName reverse transitive uri = 
+  { uri, command }
+
+  where 
+    command = Dependencies { packageName, reverse, transitive }   
 
 buildPathArgs :: String -> String -> String -> Args 
 buildPathArgs sourceName targetName uri = 
