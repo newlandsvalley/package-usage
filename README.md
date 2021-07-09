@@ -70,8 +70,8 @@ to build
    spago build
 ```
 
-to run throuh spago
--------------------
+to run through spago
+--------------------
 
 you must use ```exec-args```, For example :
 
