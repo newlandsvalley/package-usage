@@ -1,7 +1,20 @@
 {
-  "private": true,
+  "name": "purs-pkg-deps",
+  "version": "0.1.0",
+  "description": "Query package dependencies in PureScript package-sets",
+  "bin": {
+    "purs-pkg-deps": "bin/pkg-deps.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "bin/pkg-deps.js",
+    "output/**/*.js"
+  ],
   "scripts": {
-    "build": "spago build"
+    "build": "spago bundle-app --to bin/pkg-deps.js",
+    "prepublishOnly": "rm -rf output && npm run build"
   },
   "devDependencies": {
     "pulp": "^15.0.0",
@@ -11,5 +24,20 @@
   },
   "dependencies": {
     "xhr2": "^0.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newlandsvalley/package-deps.git"
+  },
+  "keywords": [
+    "PureScript",
+    "package-sets",
+    "Query"
+  ],
+  "author": "John Watson <john.watson@gmx.co.uk> (https://github.com/newlandsvalley/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/newlandsvalley/package-deps/issues"
+  },
+  "homepage": "https://github.com/newlandsvalley/package-deps#readme"
 }
