@@ -27,8 +27,8 @@ transitive dependencies of a package
 all packages that themselves immediately depend on another package (by reversing the dependencies direction)
 
 ```
-    ./pkg deps --reverse --package NAME
-    ./pkg deps -r -p NAME
+    node pkg-deps deps --reverse --package NAME
+    node pkg-deps deps -r -p NAME
 ```
 
 
