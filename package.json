@@ -1,6 +1,6 @@
 {
   "name": "purs-pkg-deps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Query package dependencies in PureScript package-sets",
   "bin": {
     "purs-pkg-deps": "bin/index.js"
