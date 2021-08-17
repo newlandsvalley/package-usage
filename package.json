@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "description": "Query package dependencies in PureScript package-sets",
   "bin": {
-    "purs-pkg-deps": "bin/pkg-deps.js"
+    "purs-pkg-deps": "bin/index.js"
   },
   "directories": {
     "test": "test"
   },
   "files": [
-    "bin/pkg-deps.js",
+    "bin/index.js",
     "output/**/*.js"
   ],
   "scripts": {
-    "build": "spago bundle-app --to bin/pkg-deps.js",
+    "build": "spago build",
     "prepublishOnly": "rm -rf output && npm run build"
   },
   "devDependencies": {

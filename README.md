@@ -13,37 +13,37 @@ Firstly build the binary and then cd to the ```bin``` directory.
 direct dependencies of a package
 
 ```
-    node pkg-deps deps --package NAME
-    node pkg-deps deps -p NAME
+    node index deps --package NAME
+    node index deps -p NAME
 ```
 
 transitive dependencies of a package
 
 ```
-    node pkg-deps deps --transitive --package NAME
-    node pkg-deps deps -t -p NAME
+    node index deps --transitive --package NAME
+    node index deps -t -p NAME
 ```
 
 all packages that themselves immediately depend on another package (by reversing the dependencies direction)
 
 ```
-    node pkg-deps deps --reverse --package NAME
-    node pkg-deps deps -r -p NAME
+    node index deps --reverse --package NAME
+    node index deps -r -p NAME
 ```
 
 
 all packages that themselves transitively depend on another package 
 
 ```
-    node pkg-deps deps --reverse --transitive --package NAME
-    node pkg-deps deps -r -t -p NAME
+    node index deps --reverse --transitive --package NAME
+    node index deps -r -t -p NAME
 ```
 
 all the paths that exist between two packages (forward direction)
 
 ```
-    node pkg-deps paths --from NAME --to NAME
-    node pkg-deps paths -f NAME -t NAME
+    node index paths --from NAME --to NAME
+    node index paths -f NAME -t NAME
 ```
 
 querying other package-sets 
@@ -53,8 +53,8 @@ Use the commands listed above, but override the default target package sets by s
 
 
 ```
-    node pkg-deps deps --package NAME --uri https://github.com/myrepo/packages.json
-    node pkg-deps deps -p NAME -u https://github.com/myrepo/packages.json
+    node index deps --package NAME --uri https://github.com/myrepo/packages.json
+    node index deps -p NAME -u https://github.com/myrepo/packages.json
 ```
 
 prerequisites
