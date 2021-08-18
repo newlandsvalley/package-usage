@@ -24,8 +24,8 @@ import Packages.Serialization (readPackages, writeDependenciesJSON, writePathsJS
 import Packages.Transitivity (transitiveDependencies)
 
 main :: Effect Unit
-main = do    
-  let 
+main = do
+  let
     preferences = prefs showHelpOnEmpty
   args <- customExecParser preferences opts
   _ <- processPackageSet args
@@ -47,56 +47,55 @@ processPackageSet :: Args -> Effect (Fiber Unit)
 processPackageSet allArgs = launchAff $ do
   mBuffer <- simpleRequest allArgs.uri
   case mBuffer of
-    Just buffer -> 
+    Just buffer ->
       case readPackages buffer of
-        Left errs -> 
+        Left errs ->
           let
             errText :: String
             errText = intercalate "," $ map renderForeignError errs
-          in 
+          in
             liftEffect $ log $ errText
 
         Right packages ->
-          case allArgs.command of 
-            
-            Dependencies args -> 
+          case allArgs.command of
 
-              case args.reverse, args.transitive of 
+            Dependencies args ->
+
+              case args.reverse, args.transitive of
 
                 true, true -> do
-                  let 
+                  let
                     deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName true
                   liftEffect $ log deps
-           
-                true, false -> do   
-                  let 
+
+                true, false -> do
+                  let
                     deps = writeDependenciesJSON $ simpleReversedDependencies packages args.packageName
                   liftEffect $ log deps
 
                 false, false -> do
-                  let 
+                  let
                     deps = writeDependenciesJSON $ simpleDependencies packages args.packageName
                   liftEffect $ log deps
 
-                false, true  -> do
-                  let 
+                false, true -> do
+                  let
                     deps = writeDependenciesJSON $ transitiveDependencies packages args.packageName false
                   liftEffect $ log deps
 
-            Paths {sourceName, targetName} -> do
-              let 
+            Paths { sourceName, targetName } -> do
+              let
                 paths = writePathsJSON $ allPaths sourceName targetName packages
               liftEffect $ log paths
 
-            {- all pivoted packages  -- we don't have a command line arg for this yet   
-              let 
-                json = pivotedPackagesJsonString packages
-              _ <- writeTextFile UTF8 outputFileName json
-              liftEffect $ log ("package usage written to : " <> outputFileName)           
-            
-            -}
+    {- all pivoted packages  -- we don't have a command line arg for this yet   
+      let 
+        json = pivotedPackagesJsonString packages
+      _ <- writeTextFile UTF8 outputFileName json
+      liftEffect $ log ("package usage written to : " <> outputFileName)           
+    -}
 
-    Nothing -> 
+    Nothing ->
       pure unit
 
 -- request packages.json from purescript package-sets on github
@@ -106,24 +105,22 @@ simpleRequest url = do
   eRes <- request $ defaultRequest
     { url = url, method = Left GET, responseFormat = ResponseFormat.string }
 
-  case eRes of  
+  case eRes of
     Left err -> do
       _ <- liftEffect $ log (printError err)
       _ <- liftEffect $ log (" failed to load package.json from : " <> url)
       pure Nothing
 
-    Right response -> 
-      case response.status of 
-        StatusCode 200 -> 
+    Right response ->
+      case response.status of
+        StatusCode 200 ->
           pure (Just response.body)
         _ -> do
           _ <- liftEffect $ log (response.statusText <> " " <> url)
           pure Nothing
 
-
 {-}
 outputFileName :: String 
 outputFileName = "package-use.json" 
 -}
-
 

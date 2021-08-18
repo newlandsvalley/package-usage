@@ -1,23 +1,20 @@
-module Packages.Types
-
-where
+module Packages.Types where
 
 import Foreign.Object (Object)
 import Data.Tuple (Tuple)
 import Data.List (List)
 import Data.Map
 import Data.Set as S
-  
 
 type DependencyName = String
 type PackageName = String
 
 type Dependencies = Array DependencyName
 
-type Package = 
+type Package =
   { dependencies :: Dependencies
-  , repo :: String 
-  , version :: String 
+  , repo :: String
+  , version :: String
   }
 
 type PackagesObject = Object Package
@@ -31,6 +28,4 @@ type PackageMap = Map PackageName (S.Set DependencyName)
 type Path = List PackageName
 
 type Paths = List Path
-
-
 
