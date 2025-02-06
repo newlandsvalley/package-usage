@@ -1,5 +1,7 @@
 # package-deps
 
+DEPRECATED - this functionality now exists in [spago@next](https://github.com/purescript/spago).
+
 A command-line utility to investigate purescript package-sets and to let you query package dependencies or paths between packages. 
 
 ## Install
